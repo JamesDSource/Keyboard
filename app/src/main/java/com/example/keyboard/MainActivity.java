@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private SoundPool spNotes;
     private int[] sounds;
     private Button bA;
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         spNotes = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         wire();
+        setListeners();
         loadSounds();
         tvRate.setText("" + rate_show);
     }
@@ -57,6 +58,24 @@ public class MainActivity extends AppCompatActivity {
         bIncrease = findViewById(R.id.bIncrease_rate);
         bDecrease = findViewById(R.id.bDecrease_rate);
     }
+
+    private void setListeners(){
+        bA.setOnClickListener(this);
+        bB.setOnClickListener(this);
+        bC.setOnClickListener(this);
+        bD.setOnClickListener(this);
+        bE.setOnClickListener(this);
+        bF.setOnClickListener(this);
+        bG.setOnClickListener(this);
+        bG_sharp.setOnClickListener(this);
+        bA_sharp.setOnClickListener(this);
+        bC_sharp.setOnClickListener(this);
+        bD_sharp.setOnClickListener(this);
+        bF_sharp.setOnClickListener(this);
+        bIncrease.setOnClickListener(this);
+        bDecrease.setOnClickListener(this);
+    }
+
     private void loadSounds(){
         sounds = new int[12];
         sounds[0] = spNotes.load(getApplicationContext() , R.raw.scalea, 1);
@@ -72,9 +91,17 @@ public class MainActivity extends AppCompatActivity {
         sounds[10] = spNotes.load(getApplicationContext() , R.raw.scaleds, 1);
         sounds[11] = spNotes.load(getApplicationContext() , R.raw.scalefs, 1);
       }
-    public void onClick(View view){
-        int index = 0;
-        switch(view.getId()){
+    //endregion
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        spNotes.release();
+    }
+
+    @Override
+    public void onClick(View view) {
+        int index = -1;
+        switch(view.getId()) {
             case R.id.bA: index = 0; break;
             case R.id.bB: index = 1; break;
             case R.id.bC: index = 2; break;
@@ -87,11 +114,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bC_sharp: index = 9; break;
             case R.id.bD_sharp: index = 10; break;
             case R.id.bF_sharp: index = 11; break;
-        }
-        spNotes.play(sounds[index], 1, 1, 1, 0, rate);
-    }
-    public void changeRate(View view){
-        switch(view.getId()){
             case R.id.bIncrease_rate:
                 if(rate < 1.9) {
                     rate += 0.1;
@@ -107,11 +129,8 @@ public class MainActivity extends AppCompatActivity {
                 tvRate.setText("" + rate_show);
                 break;
         }
-    }
-    //endregion
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        spNotes.release();
+        if(index != -1) {
+            spNotes.play(sounds[index], 1, 1, 1, 0, rate);
+        }
     }
 }
