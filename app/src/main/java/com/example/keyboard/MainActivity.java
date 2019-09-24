@@ -78,18 +78,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void loadSounds(){
         sounds = new int[12];
-        sounds[0] = spNotes.load(getApplicationContext() , R.raw.scalea, 1);
-        sounds[1] = spNotes.load(getApplicationContext() , R.raw.scaleb, 1);
-        sounds[2] = spNotes.load(getApplicationContext() , R.raw.scalec, 1);
-        sounds[3] = spNotes.load(getApplicationContext() , R.raw.scaled, 1);
-        sounds[4] = spNotes.load(getApplicationContext() , R.raw.scalee, 1);
-        sounds[5] = spNotes.load(getApplicationContext() , R.raw.scalef, 1);
-        sounds[6] = spNotes.load(getApplicationContext() , R.raw.scaleg, 1);
-        sounds[7] = spNotes.load(getApplicationContext() , R.raw.scalegs, 1);
-        sounds[8] = spNotes.load(getApplicationContext() , R.raw.scalebb, 1);
-        sounds[9] = spNotes.load(getApplicationContext() , R.raw.scalecs, 1);
-        sounds[10] = spNotes.load(getApplicationContext() , R.raw.scaleds, 1);
-        sounds[11] = spNotes.load(getApplicationContext() , R.raw.scalefs, 1);
+        sounds[0] = R.raw.scalea;
+        sounds[1] = R.raw.scaleb;
+        sounds[2] = R.raw.scalec;
+        sounds[3] = R.raw.scaled;
+        sounds[4] = R.raw.scalee;
+        sounds[5] = R.raw.scalef;
+        sounds[6] = R.raw.scaleg;
+        sounds[7] = R.raw.scalegs;
+        sounds[8] = R.raw.scalebb;
+        sounds[9] = R.raw.scalecs;
+        sounds[10] = R.raw.scaleds;
+        sounds[11] = R.raw.scalefs;
+        for(int i = 0; i < sounds.length; i++){
+            sounds[i] = spNotes.load(getApplicationContext(), sounds[i], 1);
+        }
       }
     //endregion
     @Override
