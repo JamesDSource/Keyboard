@@ -247,10 +247,18 @@
         app:layout_constraintVertical_bias="0.072" />
 
     <Button
-        android:id="@+id/bSong"
+        android:id="@+id/bSongs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="song"
-        tools:layout_editor_absoluteX="615dp"
-        tools:layout_editor_absoluteY="33dp" />
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Songs"
+        app:layout_constraintBottom_toTopOf="@+id/bF_sharp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.598"
+        app:layout_constraintStart_toEndOf="@+id/bIncrease_rate"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.013" />
 </androidx.constraintlayout.widget.ConstraintLayout>
