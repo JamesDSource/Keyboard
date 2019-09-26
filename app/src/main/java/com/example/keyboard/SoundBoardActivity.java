@@ -5,11 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class SoundBoardActivity extends AppCompatActivity implements View.OnClickListener {
     private SoundPool spNotes;
     private int[] sounds;
     private Button bA;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvRate;
     private Button bIncrease;
     private Button bDecrease;
+    private Button bSong;
     private float rate = (float)1.0;
     private int rate_show = 0;
     @Override
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         wire();
         setListeners();
-        loadSounds();
+        sounds = loadSounds();
         tvRate.setText("" + rate_show);
     }
     //region wiring and loading
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvRate = findViewById(R.id.tvRate);
         bIncrease = findViewById(R.id.bIncrease_rate);
         bDecrease = findViewById(R.id.bDecrease_rate);
+        bSong = findViewById(R.id.bSong);
     }
 
     private void setListeners(){
@@ -74,27 +77,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bF_sharp.setOnClickListener(this);
         bIncrease.setOnClickListener(this);
         bDecrease.setOnClickListener(this);
+        bSong.setOnClickListener(this);
     }
 
-    private void loadSounds(){
-        sounds = new int[12];
-        sounds[0] = R.raw.scalea;
-        sounds[1] = R.raw.scaleb;
-        sounds[2] = R.raw.scalec;
-        sounds[3] = R.raw.scaled;
-        sounds[4] = R.raw.scalee;
-        sounds[5] = R.raw.scalef;
-        sounds[6] = R.raw.scaleg;
-        sounds[7] = R.raw.scalegs;
-        sounds[8] = R.raw.scalebb;
-        sounds[9] = R.raw.scalecs;
-        sounds[10] = R.raw.scaleds;
-        sounds[11] = R.raw.scalefs;
-        for(int i = 0; i < sounds.length; i++){
-            sounds[i] = spNotes.load(getApplicationContext(), sounds[i], 1);
+    public int[] loadSounds(){
+        int[] array = new int[12];
+        array[0] = R.raw.scalea;
+        array[1] = R.raw.scaleb;
+        array[2] = R.raw.scalec;
+        array[3] = R.raw.scaled;
+        array[4] = R.raw.scalee;
+        array[5] = R.raw.scalef;
+        array[6] = R.raw.scaleg;
+        array[7] = R.raw.scalegs;
+        array[8] = R.raw.scalebb;
+        array[9] = R.raw.scalecs;
+        array[10] = R.raw.scaleds;
+        array[11] = R.raw.scalefs;
+        for(int i = 0; i < array.length; i++){
+            array[i] = spNotes.load(this, array[i], 1);
         }
+        return array;
       }
     //endregion
+    public SoundPool getSoundPool(){
+        return spNotes;
+    }
+    public int getSounds(int index){
+        return sounds[index];
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -118,22 +129,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bD_sharp: index = 10; break;
             case R.id.bF_sharp: index = 11; break;
             case R.id.bIncrease_rate:
-                if(rate < 1.9) {
-                    rate += 0.1;
+                if(rate_show < 1) {
+                    rate += 0.5;
                     rate_show++;
                 }
                 tvRate.setText("" + rate_show);
                 break;
             case R.id.bDecrease_rate:
-                if(rate > 0.1) {
-                    rate -= 0.1;
+                if(rate_show > -1) {
+                    rate -= 0.5;
                     rate_show--;
                 }
                 tvRate.setText("" + rate_show);
                 break;
+            case R.id.bSong:
+                SongPlayer songPlayer = new SongPlayer(SongPlayer.SONG.TEST);
+                new Thread(songPlayer).start();
         }
         if(index != -1) {
             spNotes.play(sounds[index], 1, 1, 1, 0, rate);
         }
+    }
+}
+class SongPlayer implements Runnable {
+    private SoundBoardActivity board = new SoundBoardActivity();
+    private int[] sounds;
+    public enum SONG {
+        TEST
+    }
+    private SONG song;
+    public SongPlayer(SONG song) {
+        this.song = song;
+        sounds = board.loadSounds();
+    }
+    @Override
+    public void run() {
+        switch(song) {
+            case TEST:
+                int[] notes = {0, 1, 2, 3, 4};
+                playSong(notes);
+                break;
+        }
+    }
+    public void playSong(int[] notes){
+        for(int i = 0; i < notes.length; i++) {
+            int note = notes[i];
+            playNote(note, 1);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void playNote(int note_index, float rate) {
+        int sound = sounds[note_index];
+        board.getSoundPool().play(sound, 1, 1, 1, 0, rate);
     }
 }

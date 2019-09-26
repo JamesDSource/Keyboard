@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".SoundBoardActivity">
 
     <Button
         android:id="@+id/bA"
@@ -245,4 +245,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.072" />
+
+    <Button
+        android:id="@+id/bSong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="song"
+        tools:layout_editor_absoluteX="615dp"
+        tools:layout_editor_absoluteY="33dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
