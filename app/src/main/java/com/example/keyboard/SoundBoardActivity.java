@@ -31,6 +31,7 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
     private TextView tvRate;
     private Button bIncrease;
     private Button bDecrease;
+    private Button bScale;
     private Button bSong;
     private Button bRecord;
     private Button bPlay;
@@ -71,6 +72,7 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         bSong = findViewById(R.id.bSongs);
         bRecord = findViewById(R.id.bRecord);
         bPlay = findViewById(R.id.bPlay);
+        bScale = findViewById(R.id.bScale);
     }
 
     private void setListeners() {
@@ -91,6 +93,7 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         bSong.setOnClickListener(this);
         bRecord.setOnClickListener(this);
         bPlay.setOnClickListener(this);
+        bScale.setOnClickListener(this);
     }
 
     public int[] loadSounds() {
@@ -186,6 +189,10 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
                 SongPlayer songPlayer = new SongPlayer("song");
                 new Thread(songPlayer).start();
                 break;
+            case R.id.bScale:
+                SongPlayer scaler = new SongPlayer("scale");
+                new Thread(scaler).start();
+                break;
             case R.id.bRecord:
                 recording = !recording;
                 if(recording) {
@@ -228,6 +235,11 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
                 // e = 4
                 // f = 5
                 // g = 6
+                //as = 8
+                //cs = 9
+                //ds = 10
+                //fs = 11
+                //gs = 7
                 case "song":
                     int[][] notes = {
                             {3, 2, 0, 3, 2, 0, 3, 2, 0, 2, 3, 0, 2, 3, 2,
@@ -238,6 +250,13 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
                     break;
                 case "recording":
                     playSongList(record);
+                    break;
+                case "scale":
+                    int[][] scale = {
+                            {0,8,1,2,9,3,10,4,5,11,6,7},
+                            {400,400,350,350,300,300,250,300,300,350,400,400}
+                    };
+                    playSong(scale);
                     break;
             }
         }
@@ -263,8 +282,7 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         }
 
         public void playNote(int note_index, float rate) {
-            int sound = sounds[note_index];
-            getSoundPool().play(sound, 1, 1, 1, 0, rate);
+            getSoundPool().play(sounds[note_index], 1, 1, 1, 0, rate);
         }
     }
 }

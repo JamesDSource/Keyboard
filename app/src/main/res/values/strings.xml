@@ -18,4 +18,5 @@
     <string name="song">song</string>
     <string name="play_back">Play Back</string>
     <string name="record">Record</string>
+    <string name="scale">Scale</string>
 </resources>
