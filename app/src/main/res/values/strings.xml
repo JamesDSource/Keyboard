@@ -15,4 +15,7 @@
     <string name="g_sharp_note">G#</string>
     <string name="increase">Increase</string>
     <string name="decrease">Decrease</string>
+    <string name="song">song</string>
+    <string name="play_back">Play Back</string>
+    <string name="record">Record</string>
 </resources>

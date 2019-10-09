@@ -5,9 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class SoundBoardActivity extends AppCompatActivity implements View.OnClickListener {
     private SoundPool spNotes;
@@ -28,8 +32,12 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
     private Button bIncrease;
     private Button bDecrease;
     private Button bSong;
+    private Button bRecord;
+    private Button bPlay;
     private float rate = (float) 1.0;
     private int rate_show = 0;
+    private boolean recording = false;
+    private ArrayList<Integer> record = new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,8 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         bIncrease = findViewById(R.id.bIncrease_rate);
         bDecrease = findViewById(R.id.bDecrease_rate);
         bSong = findViewById(R.id.bSongs);
+        bRecord = findViewById(R.id.bRecord);
+        bPlay = findViewById(R.id.bPlay);
     }
 
     private void setListeners() {
@@ -79,6 +89,8 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         bIncrease.setOnClickListener(this);
         bDecrease.setOnClickListener(this);
         bSong.setOnClickListener(this);
+        bRecord.setOnClickListener(this);
+        bPlay.setOnClickListener(this);
     }
 
     public int[] loadSounds() {
@@ -171,10 +183,28 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
                 tvRate.setText("" + rate_show);
                 break;
             case R.id.bSongs:
-                SongPlayer songPlayer = new SongPlayer("test");
+                SongPlayer songPlayer = new SongPlayer("song");
                 new Thread(songPlayer).start();
+                break;
+            case R.id.bRecord:
+                recording = !recording;
+                if(recording) {
+                    Toast.makeText(this, "Recording Started", Toast.LENGTH_SHORT).show();
+                    record.clear();
+                }
+                else {
+                    Toast.makeText(this, "Recording Stopped", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.bPlay:
+                SongPlayer recordingPlayer = new SongPlayer("recording");
+                new Thread(recordingPlayer).start();
+                break;
         }
         if (index != -1) {
+            if(recording) {
+                record.add(index);
+            }
             spNotes.play(sounds[index], 1, 1, 1, 0, rate);
         }
     }
@@ -198,24 +228,38 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
                 // e = 4
                 // f = 5
                 // g = 6
-                case "test":
-                    int[] notes = {3, 2, 0, 3, 2, 0, 3, 2, 0, 2, 3, 0, 2, 3, 2,
-                    0, 5, 2, 3, 1, 1, 1, 1};
+                case "song":
+                    int[][] notes = {
+                            {3, 2, 0, 3, 2, 0, 3, 2, 0, 2, 3, 0, 2, 3, 2,
+                                0, 5, 2, 3, 1, 1, 1, 1}, // notes
+                            {400, 200, 400, 200, 400, 200, 400, 200, 400, 200, 400, 200, 400, 200, 400,
+                                200, 400, 200, 400, 200, 400, 200, 400}}; // pause in ms between notes
                     playSong(notes);
+                    break;
+                case "recording":
+                    playSongList(record);
                     break;
             }
         }
 
-        public void playSong(int[] notes) {
-            for (int i = 0; i < notes.length; i++) {
-                int note = notes[i];
-                playNote(note, 1);
+        public void playSong(int[][] notes) {
+            for (int i = 0; i < notes[0].length; i++) {
+                int note = notes[0][i];
+                playNote(note, rate);
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(notes[1][i]);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+        }
+        public void playSongList(ArrayList<Integer> notes) {
+            int[][] array = new int[2][notes.size()];
+            for (int i = 0; i < notes.size(); i++) {
+                array[0][i] = notes.get(i);
+                array[1][i] = 300;
+            }
+            playSong(array);
         }
 
         public void playNote(int note_index, float rate) {
